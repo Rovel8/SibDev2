@@ -1,0 +1,30 @@
+.main-page__form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    margin-left: -330px;
+}
+
+.main-page__form-label{
+    font-size: 36px;
+    line-height: 52px;
+    font-weight: 500;
+    text-align: center;
+}
+.main-page__search-input{
+    width: 700px;
+    margin-top: 40px;
+    margin-right: -10px;
+}
+
+.main-page__search-input input{
+    border-radius: 6px;
+}
+
+.main-page__search-input button{
+    width: 120px;
+    border-radius: 6px;
+}

@@ -1,0 +1,44 @@
+.main-page{
+    position: relative;
+    min-height: 100vh;
+}
+
+.main-page__container{
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.main-page__header{
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    position: sticky;
+}
+
+.main-page__header-left{
+    display: flex;
+    align-items: center;
+}
+
+.main-page__header-logo img{
+    width: 48px;
+    height: 48px;
+}
+
+.main-page__header-right{
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.menu__search{
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.menu__favorite{
+    font-weight: 500;
+    font-size: 16px;
+}
+

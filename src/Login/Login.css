@@ -1,0 +1,91 @@
+@import '~antd/dist/antd.css';
+
+.login{
+
+}
+
+.login__container{
+}
+
+.login__form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 520px;
+    width: 510px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -280px;
+}
+
+.login__form-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 330px;
+    height: 50px;
+}
+
+.login__form-item input{
+}
+
+.login__form-label{
+    margin-bottom: 40px;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.login__form-logo{
+    padding-bottom: 32px;
+}
+
+.form__label{
+
+}
+
+.login__form-button{
+    margin-top: 40px;
+    text-align: center;
+}
+
+.login__form-button button{
+    width: 9em;
+    height: 2.5em;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.signUp-enter{
+    opacity: 0.02;
+    transition: opacity 400ms;
+}
+.signUp-enter-active{
+    opacity: 1;
+}
+.signUp-exit{
+
+}
+.signUp-exit-active{
+    opacity: 0;
+    transition: opacity 400ms;
+}
+
+.login__createUser{
+    position: fixed;
+    top: 73%;
+    left: 47%;
+    margin-left: -10px;
+}
+
+.login__createUser button {
+    width: 150px;
+    height: 40px;
+    border-radius: 6px;
+}
+

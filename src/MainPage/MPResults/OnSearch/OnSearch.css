@@ -1,0 +1,24 @@
+.modal__onSearch{
+    width: 200px;
+    height: 80px;
+    position: absolute;
+    right: 24%;
+    top: 22%;
+    background: white;
+    border-radius: 6px;
+}
+
+.onSearch__content{
+    max-width: 180px;
+    margin: 0 auto;
+}
+
+.onSearch__header{
+    padding-top: 5px;
+    margin-bottom: 5px;
+
+}
+
+.onSearch__link{
+
+}

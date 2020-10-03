@@ -1,0 +1,72 @@
+.videoList{
+    display: flex;
+    max-width: 800px;
+    padding-bottom: 12px;
+}
+
+.videoGrid{
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    padding-bottom: 12px;
+}
+
+
+.video__coverList{
+    margin-right: 20px;
+}
+
+.video__coverList img{
+    width: 158px;
+    height: 88px;
+}
+
+.video__coverGrid{
+    max-width: 245px;
+}
+
+.video__coverGrid img{
+    width: 245px;
+    height: 138px;
+}
+
+.video__infoList{
+    flex: 1 1 510px;
+    display: flex;
+    flex-direction: column;
+}
+
+.video__infoGrid{
+    max-width: 245px;
+    flex: 0 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.video__titleList{
+    font-family: 'Roboto';
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.video__titleGrid{
+    font-family: 'Roboto';
+    font-size: 15px;
+    font-weight: 500;
+    margin: 8px 0 0 0;
+}
+
+.video__channel-titleList{
+    font-family: 'Roboto';
+    font-size: 14px;
+    line-height: 20px;
+    color: #a9a8a8;
+}
+
+.video__channel-titleGrid{
+    font-family: 'Roboto';
+    font-size: 14px;
+    color: #a9a8a8;
+}

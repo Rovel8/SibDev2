@@ -1,0 +1,67 @@
+@import '~antd/dist/antd.css';
+
+.signup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    min-height: 100vh;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.signup__container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -170px;
+    margin-top: -120px;
+    width: 350px;
+    height: 250px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-radius: 6px;
+    padding: 0 10px;
+}
+
+.signup__form-item{
+    display: flex;
+    flex-direction: column;
+}
+
+.signup__form-btn{
+    margin-top: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.signup__form-btn button{
+    width: 9em;
+    height: 2.5em;
+    border-radius: 6px;
+}
+
+.signup__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.signup__header-btn{
+    text-align: end;
+    margin-right: 10px;
+}
+
+.signup__header-btn button{
+    padding: 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.signup__header-label{
+    font-size: 18px;
+}

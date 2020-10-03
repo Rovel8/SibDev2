@@ -1,0 +1,27 @@
+html{
+    overflow-y: scroll
+}
+
+.favorites{
+
+}
+
+.favItem__header{
+    margin: 40px 0;
+    font-family: 'Roboto';
+}
+
+.favourites__favorite-enter{
+    opacity: 0.02;
+    transition: opacity 150ms;
+}
+.favourites__favorite-enterActive{
+    opacity: 1;
+}
+.favourites__favorite-exit{
+
+}
+.favourites__favorite-exitActive{
+    opacity: 0;
+    transition: opacity 400ms;
+}
