@@ -2,43 +2,67 @@ import React, {useState} from "react";
 import ReactDOM from 'react-dom'
 import './QueryModal.css'
 import {Field, Form, Formik} from "formik";
-import {Button, Col, Input, Row} from 'antd';
+import {Button, Col, Row} from 'antd';
 import * as Yup from 'yup';
 import {useTypedSelector} from "../../../Redux/reduxStore";
-import {Select, Slider, InputNumber} from "formik-antd";
+import {Input, Select, Slider, InputNumber} from "formik-antd";
 import {setNewUserQuery} from "../../../Redux/loginReducer";
 import {useDispatch} from "react-redux";
+import {queryActions} from "../../../Redux/queryReducer";
+import {editVideoQueryProperties} from "../../../Redux/videosReducer";
 
 interface IProps {
-    setFavorite: (value: boolean) => void
+    setFavourite?: (value: boolean) => void
     label?: string
-    query?: string
-    name?: string
-    maxResults?: number
-    sortBy?: string
     id?: string
+    editMode?: boolean
 }
 
 export const QueryModal: React.FC<IProps> = (props) => {
 
+    const {Option} = Select
+
     const [maxResult, setMaxResult] = useState<number>(1)
-    const query = useTypedSelector(state => state.videos.query)
+    const dbQuery = useTypedSelector(state => state.videos.query)
     const email = useTypedSelector(state => state.login.email)
+    const editModeQuery = useTypedSelector(state => state.query.query)
+    const editModeName = useTypedSelector(state => state.query.name)
+    const editModeSortBy = useTypedSelector(state => state.query.sortBy)
+    const editModeMaxResults = useTypedSelector(state => state.query.maxResults)
+    const editModeQueryId = useTypedSelector(state => state.query.queryId)
+    const editMode = useTypedSelector(state => state.query.editMode)
+
     const dispatch = useDispatch()
 
     const initialValues = {
-        query: query,
+        query: dbQuery,
         name: '',
-        sortBy: '',
-        maxResults: maxResult as number
+        sortBy: '' as string | undefined,
+        maxResults: 1 as number | undefined
     }
+
+    const editModeInitialValues = {
+        query: editModeQuery,
+        name: editModeName,
+        sortBy: editModeSortBy,
+        maxResults: editModeMaxResults
+    }
+
+
 
     type ValuesType = typeof initialValues
 
     const onSubmit = (values: ValuesType) => {
         const {query, name, maxResults, sortBy} = values
-        props.setFavorite(false)
-        dispatch(setNewUserQuery(query, name, email, maxResults, sortBy))
+        if(props.setFavourite){
+            props.setFavourite(false)
+        }
+
+        if(editMode){
+            dispatch(editVideoQueryProperties(email, name, editModeQueryId, query, sortBy, maxResults))
+        }else {
+            dispatch(setNewUserQuery(query, name, email, maxResults, sortBy))
+        }
     }
 
     const validationSchema = Yup.object({
@@ -53,7 +77,7 @@ export const QueryModal: React.FC<IProps> = (props) => {
                     <div className={'query-modal__header'}>
                         {props.label ? props.label : 'Сохранить запрос'}
                     </div>
-                        <Formik validationSchema={validationSchema} onSubmit={onSubmit} initialValues={initialValues}>
+                        <Formik validationSchema={validationSchema} onSubmit={onSubmit} initialValues={editMode ? editModeInitialValues: initialValues}>
                         <Form>
                         <div className={'query-modal__input-label'}>
                         <label htmlFor="query">Запрос</label>
@@ -63,7 +87,11 @@ export const QueryModal: React.FC<IProps> = (props) => {
                                 {
                                     (props: any) => {
                                         const {field, meta} = props
-                                        return <Input {...field} value={query} className={meta.error && meta.touched ? 'query__error' : 'query__done'} id={'query'} />
+                                        if(editMode){
+                                            return <Input {...field} className={meta.error && meta.touched && 'errorInput'} defaultValue={editModeQuery} id={'query'} />
+                                        }else{
+                                            return <Input {...field} className={meta.error && meta.touched && 'errorInput'} value={dbQuery} id={'query'} />
+                                        }
                                     }
                                 }
                             </Field>
@@ -76,7 +104,11 @@ export const QueryModal: React.FC<IProps> = (props) => {
                                 {
                                     (props: any) => {
                                         const {field, meta} = props
-                                        return <Input className={meta.error && meta.touched ? 'query__error' : 'query__done'} {...field} id={'name'} />
+                                        if(editMode){
+                                            return <Input {...field} className={meta.error && meta.touched && 'errorInput'} id={'name'} defaultValue={editModeName} />
+                                        }else{
+                                            return <Input {...field} className={meta.error && meta.touched && 'errorInput'} id={'name'} />
+                                        }
                                     }
                                 }
                             </Field>
@@ -85,13 +117,13 @@ export const QueryModal: React.FC<IProps> = (props) => {
                         <label htmlFor="sortBy">Сортировать по</label>
                         </div>
                         <div className={'query-modal__form-input'}>
-                            <Select name={'sortBy'} id={'sortBy'} defaultValue="rating" style={{ width: '100%' }}>
-                                <option value="date">Date</option>
-                                <option value="rating">Rating</option>
-                                <option value="relevance">Relevance</option>
-                                <option value='title'>Title</option>
-                                <option value='videoCount'>Total Videos</option>
-                                <option value='viewCount'>Total Views</option>
+                            <Select name={'sortBy'} id={'sortBy'} defaultValue={editMode ? editModeSortBy : 'rating'} style={{ width: '100%' }}>
+                                <Option value="date">Date</Option>
+                                <Option value="rating">Rating</Option>
+                                <Option value="relevance">Relevance</Option>
+                                <Option value='title'>Title</Option>
+                                <Option value='videoCount'>Total Videos</Option>
+                                <Option value='viewCount'>Total Views</Option>
                             </Select>
                         </div>
                         <div className={'query-modal__form-input'}>
@@ -103,7 +135,8 @@ export const QueryModal: React.FC<IProps> = (props) => {
                                 <Col span={12}>
                                     <Slider
                                         id={'maxResults'} name={'maxResults'} tooltipVisible={false} max={50}
-                                        onChange={(value: number) => setMaxResult(value)} style={{width: '100%'}} defaultValue={1}
+                                        onChange={(value: number) => setMaxResult(value)}
+                                        style={{width: '100%'}} defaultValue={editMode ? editModeMaxResults : maxResult}
                                     />
                                 </Col>
                                 <Col span={4}>
@@ -111,14 +144,22 @@ export const QueryModal: React.FC<IProps> = (props) => {
                                         min={1}
                                         max={50}
                                         style={{ margin: '0 16px' }}
-                                        value={maxResult}
+                                        defaultValue={editMode ? editModeMaxResults : maxResult}
                                     />
                                 </Col>
                             </Row>
                         </div>
                         </div>
                         <div className={'query-modal__buttons'}>
-                        <Button onClick={() => {props.setFavorite(false)}} type={'default'}>Не сохранять</Button>
+                        <Button onClick={() => {
+                            if(editMode){
+                                dispatch(queryActions.setEditingQuery({query: '', name: '', maxResults: 0, sortBy: '', queryId: ''}))
+                                dispatch(queryActions.setEditMode(false))
+                            }
+                            if(props.setFavourite){
+                                props.setFavourite(false)
+                            }
+                        }} type={'default'}>Не сохранять</Button>
                         <Button htmlType={'submit'} type={'primary'}>Сохранить</Button>
                         </div>
 

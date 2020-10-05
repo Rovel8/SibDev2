@@ -6,11 +6,13 @@ import { Action } from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useSelector} from "react-redux";
 import {initializationReducer} from "./initializationReducer";
 import {videosReducer} from "./videosReducer";
+import {queryReducer} from "./queryReducer";
 
 const reducers = combineReducers({
     login: loginReducer,
     initialization: initializationReducer,
-    videos: videosReducer
+    videos: videosReducer,
+    query: queryReducer
 })
 
 export const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunk)))

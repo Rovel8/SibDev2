@@ -9,15 +9,15 @@ import {setVideoItems} from "../../Redux/videosReducer";
 import {useDispatch} from "react-redux";
 import { Typography } from 'antd';
 import CSSTransition from "react-transition-group/CSSTransition";
-import {OnSearch} from "./OnSearch/OnSearch";
 import {QueryModal} from "./QueryModal/QueryModal";
+import {nanoid} from "nanoid";
 
-export const MPResults: React.FC<{}> = (props) => {
+export const MPResults: React.FC<{}> = () => {
 
     const { Link } = Typography;
 
     const [grid, setGrid] = useState<boolean>(false)
-    const [favorite, setFavorite] = useState<boolean>(false)
+    const [favourite, setFavourite] = useState<boolean>(false)
 
     const { Search } = Input;
 
@@ -28,7 +28,7 @@ export const MPResults: React.FC<{}> = (props) => {
     const videos = useTypedSelector(state => state.videos.videos)
 
     const suffix = (
-        <Link onClick={() => setFavorite(true)}>
+        <Link onClick={() => setFavourite(true)}>
             <HeartOutlined
                 style={{
                     fontSize: 16,
@@ -46,6 +46,7 @@ export const MPResults: React.FC<{}> = (props) => {
         </div>
         <div className={'MPResults__input'}>
             <Search
+                defaultValue={query}
                 placeholder="Чего хотите посмотреть?"
                 enterButton="Найти"
                 size="large"
@@ -53,13 +54,13 @@ export const MPResults: React.FC<{}> = (props) => {
                 onSearch={(values) => dispatch(setVideoItems(values))}
             />
         </div>
-        <CSSTransition in={favorite} unmountOnExit={true} timeout={150} classNames={{
+        <CSSTransition in={favourite} unmountOnExit={true} timeout={150} classNames={{
             enter: 'MPResults__favorite-enter',
             enterActive: 'MPResults__favorite-enterActive',
             exit: 'MPResults__favorite-exit',
             exitActive: 'MPResults__favorite-exitActive'
         }}>
-            <QueryModal setFavorite={setFavorite} />
+            <QueryModal setFavourite={setFavourite} />
         </CSSTransition>
         <br/>
         <div className={'MPResults__videos'}>
@@ -77,7 +78,10 @@ export const MPResults: React.FC<{}> = (props) => {
            </div>
         </div>
         <div className={grid ? "MPResults__video-gridItems" : 'MPResults__video-listItems'}>
-            {videos.map(item => <VideoItem grid={grid} videoTitle={item.videoTitle} channelTitle={item.channelTitle} cover={item.cover} />)}
+            {videos.map((item) => {
+                let id = nanoid()
+                return <VideoItem key={id} grid={grid} videoTitle={item.videoTitle} channelTitle={item.channelTitle} cover={item.cover} />
+            })}
         </div>
         </>
 }

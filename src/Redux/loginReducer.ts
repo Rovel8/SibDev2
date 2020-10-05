@@ -3,7 +3,6 @@ import {auth, db} from "../Firebase/firebase";
 import {initializationActions} from "./initializationReducer";
 
 const SET_USER = 'SET_USER'
-const SET_QUERY_LIST = 'SET_QUERY_LIST'
 
 export interface IQueryList {
     query: string
@@ -36,11 +35,11 @@ export const loginReducer = (state = initialState, action: Actions): InitialStat
 type Actions = InferActions<typeof loginActions>
 
 export const loginActions = {
-    setUser: (email: string | null, initialized: boolean) => ({type: SET_USER, email, initialized} as const),
-    setQueryList: (payload: IQueryList) => ({type: SET_QUERY_LIST, payload} as const)
+    setUser: (email: string | null, initialized: boolean) => ({type: SET_USER, email, initialized} as const)
 }
 
-export const setNewUserQuery = (query: string | undefined, name: string, email: string | null, maxResults = 12, sortBy = 'rating'): ThunkType<string> => async (dispatch, getState) => {
+export const setNewUserQuery = (query: string | undefined, name: string, email: string | null,
+                                maxResults = 12, sortBy = 'rating'): ThunkType<string> => async () => {
     await db.collection(`${email}`).doc().set({
         query: query,
         name: name,
@@ -49,7 +48,7 @@ export const setNewUserQuery = (query: string | undefined, name: string, email: 
     })
 }
 
-export const authStatusObserver = (): ThunkType<string> => (dispatch, getState) => {
+export const authStatusObserver = (): ThunkType<string> => (dispatch) => {
     auth.onAuthStateChanged((user) => {
         if(user){
             dispatch(loginActions.setUser(user.email, true))
@@ -63,8 +62,8 @@ export const authStatusObserver = (): ThunkType<string> => (dispatch, getState) 
     })
 }
 
-export const createNewUser = (email: string, password: string): ThunkType<string> => async (dispatch, getState) => {
-    let result = await auth.createUserWithEmailAndPassword(email, password)
+export const createNewUser = (email: string, password: string): ThunkType<string> => async (dispatch) => {
+    await auth.createUserWithEmailAndPassword(email, password)
     await db.collection('users').doc(email).set({
         userEmail: email
     })
@@ -73,14 +72,14 @@ export const createNewUser = (email: string, password: string): ThunkType<string
     dispatch(initializationActions.setIsFetching(false))
 }
 
-export const logInUser = (email: string, password: string): ThunkType<string> => async (dispatch, getState) => {
+export const logInUser = (email: string, password: string): ThunkType<string> => async (dispatch) => {
     await auth.signInWithEmailAndPassword(email, password)
     dispatch(loginActions.setUser(email, true))
     dispatch(initializationActions.initializeApp())
     dispatch(initializationActions.setIsFetching(false))
 }
 
-export const logoutUser = ():ThunkType<string> => async(dispatch, getState) => {
+export const logoutUser = ():ThunkType<string> => async(dispatch) => {
     await auth.signOut()
     dispatch(loginActions.setUser('', false))
     dispatch(initializationActions.initializeApp())

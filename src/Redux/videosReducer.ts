@@ -1,5 +1,7 @@
 import {InferActions, ThunkType} from "./reduxStore";
 import {getVideos} from "../API/API";
+import {db} from "../Firebase/firebase";
+import {queryActions} from "./queryReducer";
 
 const SET_AMOUNT = 'SET_AMOUNT'
 const SET_QUERY = 'SET_QUERY'
@@ -12,18 +14,10 @@ interface IVideos {
     cover?: string
 }
 
-interface IFavorites {
-    query: string | null
-    label: string | null
-    sortBy?: string
-    maxResults: string
-}
-
 const initialState = {
     videos: [] as Array<IVideos>,
     amount: 0,
-    query: '' as string | undefined,
-    favorites: [] as Array<IFavorites>
+    query: '' as string | undefined
 }
 
 type InitialStateType = typeof initialState
@@ -72,5 +66,17 @@ export const setVideoItems = (value: string): ThunkType<string> => (dispatch) =>
             dispatch(videosActions.setVideosAmount(result.data.pageInfo.totalResults))
             result.data.items.map((item: any) => dispatch(videosActions.setVideos(item.snippet.title, item.snippet.channelTitle, item.snippet.thumbnails.medium.url)))
         })
+}
+
+export const editVideoQueryProperties = (email: string | null, name: string, editModeQueryId: string,
+                                         query: string | undefined, sortBy: string | undefined, maxResults: number | undefined):ThunkType<string> => (dispatch) => {
+    db.collection(`${email}`).doc(editModeQueryId).set({
+        query: query,
+        name: name,
+        sortBy: sortBy,
+        maxResults: maxResults
+    })
+    dispatch(queryActions.setEditingQuery({query: '', name: '', maxResults: 0, sortBy: '', queryId: ''}))
+    dispatch(queryActions.setEditMode(false))
 }
 
