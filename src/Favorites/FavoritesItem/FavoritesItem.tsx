@@ -6,7 +6,7 @@ import {useTypedSelector} from "../../Redux/reduxStore";
 import {db} from "../../Firebase/firebase";
 import {useDispatch} from "react-redux";
 import {queryActions} from "../../Redux/queryReducer";
-import {setVideoItems} from "../../Redux/videosReducer";
+import {setVideoItems, videosActions} from "../../Redux/videosReducer";
 import {NavLink} from "react-router-dom";
 
 interface IProps{
@@ -28,7 +28,8 @@ export const FavoritesItem: React.FC<IQueryList & IProps> = (props) => {
                 <div className={'favItem__actions'}>
                     <NavLink to={'/MainPage/results'}>
                         <Link onClick={() => {
-                            dispatch(setVideoItems(props.query))
+                            dispatch(setVideoItems(props.query, props.sortBy, props.maxResults))
+                            dispatch(videosActions.setCurrentBookmark('search'))
                         }}>Выполнить</Link>
                     </NavLink>
                     <Link onClick={() => {

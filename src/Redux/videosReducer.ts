@@ -7,6 +7,7 @@ const SET_AMOUNT = 'SET_AMOUNT'
 const SET_QUERY = 'SET_QUERY'
 const SET_VIDEOS = 'SET_VIDEOS'
 const CLEAR_VIDEOS_VAULT = 'CLEAR_VIDEOS_VAULT'
+const SET_CURRENT_BOOKMARK = 'SET_CURRENT_BOOKMARK'
 
 interface IVideos {
     videoTitle: string | null
@@ -17,7 +18,8 @@ interface IVideos {
 const initialState = {
     videos: [] as Array<IVideos>,
     amount: 0,
-    query: '' as string | undefined
+    query: '' as string | undefined,
+    currentBookmark: 'search'
 }
 
 type InitialStateType = typeof initialState
@@ -44,6 +46,11 @@ export const videosReducer = (state = initialState, action: Actions):InitialStat
                 ...state,
                 videos: [] // clear existing items in videos array
             }
+        case SET_CURRENT_BOOKMARK:
+            return {
+                ...state,
+                currentBookmark: action.bookmark
+            }
         default: return state
     }
 }
@@ -56,11 +63,12 @@ export const videosActions = {
     setVideos: (videoTitle: string | null, channelTitle: string | null, cover?: string) => ({
         type: SET_VIDEOS, payload: {videoTitle, channelTitle, cover}
     } as const),
-    clearVideosVault: () => ({type: CLEAR_VIDEOS_VAULT} as const)
+    clearVideosVault: () => ({type: CLEAR_VIDEOS_VAULT} as const),
+    setCurrentBookmark: (bookmark: string) => ({type: SET_CURRENT_BOOKMARK, bookmark} as const)
 }
 
-export const setVideoItems = (value: string): ThunkType<string> => (dispatch) => {
-        getVideos(value).then(result => {
+export const setVideoItems = (value: string, order = 'rating', maxResults = 12): ThunkType<string> => (dispatch) => {
+        getVideos(value, order, maxResults).then(result => {
             dispatch(videosActions.clearVideosVault())
             dispatch(videosActions.setQuery(value))
             dispatch(videosActions.setVideosAmount(result.data.pageInfo.totalResults))
@@ -69,8 +77,8 @@ export const setVideoItems = (value: string): ThunkType<string> => (dispatch) =>
 }
 
 export const editVideoQueryProperties = (email: string | null, name: string, editModeQueryId: string,
-                                         query: string | undefined, sortBy: string | undefined, maxResults: number | undefined):ThunkType<string> => (dispatch) => {
-    db.collection(`${email}`).doc(editModeQueryId).set({
+                                         query: string | undefined, sortBy: string | undefined, maxResults: number | undefined):ThunkType<string> => async (dispatch) => {
+    await db.collection(`${email}`).doc(editModeQueryId).set({
         query: query,
         name: name,
         sortBy: sortBy,

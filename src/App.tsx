@@ -11,8 +11,6 @@ import {useDispatch} from "react-redux";
 
 export function App() {
 
-
-
     return (
         <div className="App">
             <Switch>

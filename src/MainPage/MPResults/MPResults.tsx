@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Input } from 'antd';
 import './MPResults.css'
 import {AppstoreOutlined, HeartOutlined, UnorderedListOutlined} from "@ant-design/icons";
@@ -24,7 +24,7 @@ export const MPResults: React.FC<{}> = () => {
     const dispatch = useDispatch()
 
     const amount = useTypedSelector(state => state.videos.amount)
-    const query = useTypedSelector(state => state.videos.query)
+    let query = useTypedSelector(state => state.videos.query)
     const videos = useTypedSelector(state => state.videos.videos)
 
     const suffix = (

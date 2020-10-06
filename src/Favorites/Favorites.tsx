@@ -6,18 +6,25 @@ import {nanoid} from "nanoid";
 import {FavoritesItem} from "./FavoritesItem/FavoritesItem";
 import CSSTransition from "react-transition-group/CSSTransition";
 import {QueryModal} from "../MainPage/MPResults/QueryModal/QueryModal";
+import {videosActions} from "../Redux/videosReducer";
+import {useDispatch} from "react-redux";
 
 export const Favorites: React.FC<{}> = () => {
 
     const [fav, setFav] = useState<any>([])
 
+    const dispatch = useDispatch()
     const email = useTypedSelector(state => state.login.email)
     const editMode = useTypedSelector(state => state.query.editMode)
 
     useEffect(() => {
-        db.collection(`${email}`).get().then(result =>
-        setFav(result.docs.map((doc) => ({id: doc.id, data: doc.data()}))))
-    })
+        db.collection(`${email}`).onSnapshot(snapshot =>
+        setFav(snapshot.docs.map((doc) => ({id: doc.id, data: doc.data()}))))
+    }, [])
+
+    useEffect(() => {
+        dispatch(videosActions.setCurrentBookmark('favorite'))
+    }, [])
 
     return (<>
         <div className={'favorites'}>

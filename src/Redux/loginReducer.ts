@@ -1,6 +1,7 @@
 import {InferActions, ThunkType} from "./reduxStore";
 import {auth, db} from "../Firebase/firebase";
 import {initializationActions} from "./initializationReducer";
+import {videosActions} from "./videosReducer";
 
 const SET_USER = 'SET_USER'
 
@@ -63,17 +64,23 @@ export const authStatusObserver = (): ThunkType<string> => (dispatch) => {
 }
 
 export const createNewUser = (email: string, password: string): ThunkType<string> => async (dispatch) => {
-    await auth.createUserWithEmailAndPassword(email, password)
+    let result = await auth.createUserWithEmailAndPassword(email, password)
     await db.collection('users').doc(email).set({
         userEmail: email
     })
+
+    localStorage.setItem('user', JSON.stringify(result))
+
     dispatch(loginActions.setUser(email, true))
     dispatch(initializationActions.initializeApp())
     dispatch(initializationActions.setIsFetching(false))
 }
 
 export const logInUser = (email: string, password: string): ThunkType<string> => async (dispatch) => {
-    await auth.signInWithEmailAndPassword(email, password)
+    let result = await auth.signInWithEmailAndPassword(email, password)
+
+    localStorage.setItem('user', JSON.stringify(result))
+
     dispatch(loginActions.setUser(email, true))
     dispatch(initializationActions.initializeApp())
     dispatch(initializationActions.setIsFetching(false))
@@ -81,7 +88,13 @@ export const logInUser = (email: string, password: string): ThunkType<string> =>
 
 export const logoutUser = ():ThunkType<string> => async(dispatch) => {
     await auth.signOut()
+
+    localStorage.removeItem('user')
+
     dispatch(loginActions.setUser('', false))
     dispatch(initializationActions.initializeApp())
     dispatch(initializationActions.setIsFetching(false))
+    dispatch(videosActions.clearVideosVault())
+    dispatch(videosActions.setQuery(''))
+    dispatch(videosActions.setVideosAmount(0))
 }

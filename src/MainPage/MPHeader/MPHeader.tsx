@@ -1,14 +1,15 @@
-import React, {useState} from "react";
+import React from "react";
 import SibDevLogo from "../../assets/sibdev-logo.png";
 import {Menu} from "antd";
 import {useDispatch} from "react-redux";
 import {logoutUser} from "../../Redux/loginReducer";
-import {Link, Redirect, useHistory} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
+import {useTypedSelector} from "../../Redux/reduxStore";
+import {videosActions} from "../../Redux/videosReducer";
 
 export const MPHeader: React.FC<{}> = () => {
 
-    const history = useHistory()
-    const [current, setCurrent] = useState(history.location.pathname === '/MainPage/favorites' ? 'favorite' : 'search')
+    const bookmark = useTypedSelector(state => state.videos.currentBookmark)
     const dispatch = useDispatch()
 
 
@@ -28,7 +29,7 @@ export const MPHeader: React.FC<{}> = () => {
                 <div className={'main-page__header-logo'}>
                     <img src={SibDevLogo} alt="SibDevLogo"/>
                 </div>
-                <Menu onClick={(e) => setCurrent(String(e.key))} selectedKeys={[current]} mode="horizontal">
+                <Menu onClick={(e) => dispatch(videosActions.setCurrentBookmark(String(e.key)))} selectedKeys={[bookmark]} mode="horizontal">
 
                     <Menu.Item className={'menu__search'} key="search">
                         Поиск
